@@ -11,4 +11,7 @@ mkdir -p ~/.kaggle
 echo "$KAGGLE_CONFIG" > ~/.kaggle/kaggle.json
 chmod 600 ~/.kaggle/kaggle.json
 echo "Downloading Kaggle Dataset"
-kaggle datasets download -d $DATASET_NAME -f $FILE_NAME -p $OUTPUT_NAME
+kaggle datasets download -d $DATASET_NAME -f $FILE_NAME
+echo "Unzipping Dataset"
+unzip "$FILE_NAME.zip"
+mv $FILE_NAME $OUTPUT_NAME
