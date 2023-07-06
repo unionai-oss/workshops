@@ -1,15 +1,18 @@
+import glob
+import os
+
 import pandas as pd
 from flytekit import task, workflow, ContainerTask, kwtypes
 from flytekit.types.file import FlyteFile
 from ..imagespec import dedupe_image, default_image
-
+from flytekit.types.directory import FlyteDirectory
 get_dataset = ContainerTask(
     name="get_dataset",
     image="ghcr.io/zeryx/flytekit:kaggle-aaae",
     input_data_dir="/var/inputs",
     output_data_dir="/var/outputs",
     inputs=kwtypes(dataset_name=str, file_name=str, kaggle_config=str),
-    outputs=kwtypes(dataset=FlyteFile),
+    outputs=kwtypes(dataset=FlyteDirectory),
     command=[
         "./get_dataset.sh",
         "{{.inputs.dataset_name}}",
@@ -32,9 +35,12 @@ if dedupe_image.is_container:
 
 
     @task(container_image=dedupe_image)
-    def deduplicate_dataset(dataset: FlyteFile) -> pd.DataFrame:
+    def deduplicate_dataset(dataset: FlyteDirectory) -> pd.DataFrame:
+        dataset.download()
+        files = glob.glob(os.path.join(dataset.path, "*"))
+
         import pandas as pd
-        df = pd.read_csv(dataset)
+        df = pd.read_csv(files[0])
         df.drop_duplicates(inplace=True)
         return df
 
@@ -42,6 +48,6 @@ if dedupe_image.is_container:
     @workflow
     def wf(dataset_name: str, file_name: str) -> pd.DataFrame:
         config = get_credentials()
-        dataset: FlyteFile = get_dataset(dataset_name=dataset_name, file_name=file_name, kaggle_config=config)
+        dataset: FlyteDirectory = get_dataset(dataset_name=dataset_name, file_name=file_name, kaggle_config=config)
         deduped_data = deduplicate_dataset(dataset=dataset)
         return deduped_data
