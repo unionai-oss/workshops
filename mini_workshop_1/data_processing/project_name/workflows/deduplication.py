@@ -1,6 +1,6 @@
 import glob
 import os
-
+import zipfile
 import pandas as pd
 from flytekit import task, workflow, ContainerTask, kwtypes
 from flytekit.types.file import FlyteFile
@@ -38,9 +38,8 @@ if dedupe_image.is_container:
     def deduplicate_dataset(dataset: FlyteDirectory) -> pd.DataFrame:
         dataset.download()
         files = glob.glob(os.path.join(dataset.path, "*"))
-
-        import pandas as pd
-        df = pd.read_csv(files[0])
+        zf = zipfile.ZipFile(files[0])
+        df = pd.read_csv(zf.open('crawl-300d-2M.vec'))
         df.drop_duplicates(inplace=True)
         return df
 
