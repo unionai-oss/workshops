@@ -136,4 +136,5 @@ _pb_output
 _pb_output/*
 
 flyte-package.tgz
-*/config.json
+mini_workshop_1/data_processing/config.json
+mini_workshop_1/data_processing/kaggle.json

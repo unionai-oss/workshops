@@ -1,7 +1,11 @@
 # data_processing
 
-A template for the recommended layout of a Flyte enabled repository for code written in python using [flytekit](https://docs.flyte.org/projects/flytekit/en/latest/).
-
+A Flyte project that contains a workflow that processes data from Kaggle.
+Useful as an example showcasing some best practices regarding:
+- Imagespec
+- Raw ContainerTasks
+- Testing with pytest
+- Flytekit Remote
 ## Usage
 
 To get up and running with your Flyte project, we recommend following the
