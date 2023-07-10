@@ -2,14 +2,14 @@ import flytekit
 from flytekit import task, workflow, ContainerTask, kwtypes, Resources, TaskMetadata
 from flytekit.types.file import FlyteFile
 from flytekit import Secret
-from ..imagespec import dedupe_image
+from ..imagespec import dedupe_image, registry_prefix
 
-SECRET_GROUP = "arn:aws:secretsmanager:us-east-2:356633062068:"
-SECRET_KEY = "secret:demo/kaggle-auth-zu8FSa"
+SECRET_GROUP = "arn:aws:secretsmanager:<your-aws-region>:<your-aws-account>:"
+SECRET_KEY = "<your-secret-org>/<your-secret-name"
 
 get_dataset = ContainerTask(
     name="get_dataset",
-    image="ghcr.io/zeryx/core:kaggle-abcd",
+    image=f"{registry_prefix}/core:kaggle",
     input_data_dir="/var/inputs",
     output_data_dir="/var/outputs",
     inputs=kwtypes(dataset_name=str, file_name=str, kaggle_config=str),
