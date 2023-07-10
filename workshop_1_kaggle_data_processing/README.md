@@ -21,6 +21,8 @@ The following advanced Flyte features will be covered:
 1. Clone this repository
 2. Create a [Kaggle Account](https://www.kaggle.com/)
 3. Create a [Kaggle API Token](https://www.kaggle.com/docs/api#getting-started-installation-&-authentication)
+4. Update [imagespec.py](kaggle_data_processing/imagespec.py) with your image registry information
+5. Build an AWS Secret containing your kaggle api auth, by following [this guide](https://docs.union.ai/integrations/enabling-aws-resources/enabling-aws-secrets-manager)
 4. run `docker build -f Dockerfile -t your_image_registry.com/your_image_name:your_image_tag .`
 5. run `docker push your_image_registry.com/your_image_name:your_image_tag`
 6. update your dependencies by installing all the local dependencies `pip install -r requirements.txt`
