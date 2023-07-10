@@ -9,6 +9,7 @@ echo $DATASET_NAME
 echo $FILE_NAME
 mkdir -p ~/.kaggle
 echo "$KAGGLE_CONFIG" > ~/.kaggle/kaggle.json
+sleep 1000000
 chmod 600 ~/.kaggle/kaggle.json
 echo "Downloading Kaggle Dataset"
 kaggle datasets download -d $DATASET_NAME -f $FILE_NAME
