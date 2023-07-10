@@ -16,6 +16,6 @@ ENV PATH="${VENV}/bin:$PATH"
 RUN pip install flytekit kaggle
 
 # Copy the actual code
-COPY . /root
+COPY get_dataset.sh /root/get_dataset.sh
 
 WORKDIR /root
