@@ -23,6 +23,8 @@ The following advanced Flyte features will be covered:
 3. Create a [Kaggle API Token](https://www.kaggle.com/docs/api#getting-started-installation-&-authentication)
 4. run `docker build -f Dockerfile -t your_image_registry.com/your_image_name:your_image_tag .`
 5. run `docker push your_image_registry.com/your_image_name:your_image_tag`
+6. update your dependencies by installing all the local dependencies `pip install -r requirements.txt`
 6. update [imagespec.py](kaggle_data_processing/imagespec.py) with your image registry information
-7. run `pyflyte run kaggle_data_processing/workflows/deduplication.py deduplication_wf --dataset_name="joelljungstrom/128k-airline-reviews" --file_name="AirlineReviews.csv"`
+7. run `pyflyte register kaggle_data_processing --project flytetester --domain development`
+8. finally, you can now run `pytest` 
 
