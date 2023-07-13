@@ -1,6 +1,6 @@
 from flytekit import ImageSpec
 
-registry_prefix = "ghcr.io/<your-username>/"
+registry_prefix = "ghcr.io/zeryx/"
 
 dedupe_image = ImageSpec(
     name="core",
