@@ -10,6 +10,9 @@ import signal
 
 app = FastAPI()
 
+# This is an example of a simple server that takes in a dictionary and adds a timestamp to it.
+# The server is terminated by sending a DELETE request to /terminate
+
 class InputDict(BaseModel):
     name: str
     timestamp: str = None
