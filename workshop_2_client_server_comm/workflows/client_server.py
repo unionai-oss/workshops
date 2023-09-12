@@ -46,13 +46,15 @@ def client_function(name: str) -> dict:
         t0 = time()
         response = requests.post(interact_url, json={"name": name})
         t1 = time()
-        return {
+        output = {
             "time to call server": f"{(t1 - t0) * 1000} ms",
             "time from server": response.json()["timestamp"],
             "name from server": response.json()["name"]
         }
+        return output
+    except Exception as e:
+        raise e
     finally:
-
         requests.delete(terminate_url)
 
 
