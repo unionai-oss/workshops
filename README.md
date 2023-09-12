@@ -6,3 +6,4 @@ These workshops each have their own readme, and dependencies; **All workshops as
 
 ## Workshops
 - [Kaggle Deduplication - Workshop 1](workshop_1_kaggle_data_processing/README.md)
+- [Client/Server Communication - Workshop 2](workshop_2_client_server_comm/README.md)
