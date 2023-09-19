@@ -2,7 +2,7 @@
 
 import typing
 from flytekit import task, workflow, PodTemplate
-from time import time, sleep
+from time import time
 import requests
 from kubernetes.client import V1PodSpec, V1Container, V1ResourceRequirements
 
@@ -43,8 +43,6 @@ pod = PodTemplate(
 @task(pod_template=pod, container_image=client_img)
 def client_function(name: str) -> dict:
     try:
-        sleep(1)
-        print("Slept for 1 second, waiting for server to deploy")
         t0 = time()
         response = requests.post(interact_url, json={"name": name})
         t1 = time()
