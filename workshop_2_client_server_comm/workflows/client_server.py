@@ -54,8 +54,6 @@ def client_function(name: str) -> dict:
             "name from server": response.json()["name"]
         }
         return output
-    except Exception as e:
-        raise e
     finally:
         requests.delete(terminate_url)
 
