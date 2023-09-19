@@ -7,6 +7,7 @@ from ..imagespec import dedupe_image, registry_prefix
 SECRET_GROUP = "arn:aws:secretsmanager:<your-aws-region>:<your-aws-account>:"
 SECRET_KEY = "<your-secret-org>/<your-secret-name"
 
+# noinspection PyTypeChecker
 get_dataset = ContainerTask(
     name="get_dataset",
     image=f"{registry_prefix}/core:kaggle",
@@ -24,12 +25,13 @@ get_dataset = ContainerTask(
     metadata=TaskMetadata(retries=5)
 )
 
+
 @task(
     secret_requests=[
         Secret(
-        group=SECRET_GROUP,
-        key=SECRET_KEY,
-        mount_requirement=Secret.MountType.FILE)
+            group=SECRET_GROUP,
+            key=SECRET_KEY,
+            mount_requirement=Secret.MountType.FILE)
     ],
 )
 def get_credentials() -> str:
@@ -42,6 +44,8 @@ def get_credentials() -> str:
 # We do that with the `.is_container` property of imagespec objects.
 if dedupe_image.is_container:
     import pandas as pd
+
+
     @task(container_image=dedupe_image, requests=Resources(cpu="2", mem="10Gi", ephemeral_storage="10Gi"))
     def deduplicate_dataset(dataset: FlyteFile) -> pd.DataFrame:
         print("getting dataset as csv")
@@ -51,9 +55,12 @@ if dedupe_image.is_container:
         df.drop_duplicates(inplace=True)
         return df
 
+
     @workflow
     def deduplication_wf(dataset_name: str, file_name: str) -> pd.DataFrame:
         config = get_credentials()
+        # noinspection PyTypeChecker
         dataset: FlyteFile = get_dataset(dataset_name=dataset_name, file_name=file_name, kaggle_config=config)
         deduped_data = deduplicate_dataset(dataset=dataset)
+        # noinspection PyTypeChecker
         return deduped_data

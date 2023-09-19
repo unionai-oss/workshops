@@ -38,5 +38,5 @@ def test_workflow(wf_case: WorkflowCase):
     url = remote.generate_console_url(execution)
     print(f"Execution URL: {url}")
     execution = remote.wait(execution)
-    ## Make sure that your aws credentials are set up correctly to download from S3 locally
+    # Make sure that your aws credentials are set up correctly to download from S3 locally
     assert execution.closure.phase == 4

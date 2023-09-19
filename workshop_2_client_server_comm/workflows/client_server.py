@@ -1,6 +1,5 @@
 """A simple Flyte example."""
 
-import typing
 from flytekit import task, workflow, PodTemplate
 from time import time
 import requests
@@ -60,4 +59,5 @@ def client_function(name: str) -> dict:
 
 @workflow
 def client_server_wf(name: str = "union") -> dict:
+    # noinspection PyTypeChecker
     return client_function(name=name)
