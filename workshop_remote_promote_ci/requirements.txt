@@ -1,0 +1,5 @@
+flytekit>=1.8.0
+pandas>=1.5.3
+scikit-learn<1.3
+pytest==7.4.0
+flytekitplugins-envd>=1.8.0
