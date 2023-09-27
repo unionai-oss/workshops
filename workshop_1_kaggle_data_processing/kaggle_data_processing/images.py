@@ -1,6 +1,7 @@
 from flytekit import ImageSpec
 
-registry_prefix = "ghcr.io/<your-username>/"
+# Your image registry url, if using ghcr.io, this will be "ghcr.io/<your-username>"
+registry_prefix = "ghcr.io/<your-username>"
 
 
 # This image is used by the ContainerTask obtaining the dataset with the Kaggle API
