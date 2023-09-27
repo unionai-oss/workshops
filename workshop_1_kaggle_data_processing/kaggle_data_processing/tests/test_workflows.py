@@ -16,27 +16,32 @@ from flytekit.remote import FlyteRemote
 from flytekit.configuration import Config
 import pytest
 
-logger = logging.getLogger(__name__)
+project_deployment = "<your-project-name>"
+domain_deployment = "<your-domain>"
 
-CONFIG_PATH = os.environ.get(
-    "UCTL_CONFIG",
-    str(Path.home() / ".uctl" / "config.yaml")
-)
+class TestWorkflow:
+    @classmethod
+    def setup_class(cls):
+        # get config path from environment variable, or use the uctl default
+        cls.CONFIG_PATH = os.environ.get(
+            "UCTL_CONFIG",
+            str(Path.home() / ".uctl" / "config.yaml")
+        )
 
-remote = FlyteRemote(
-    config=Config.auto(CONFIG_PATH),
-    default_project="flytetester",
-    default_domain="development",
-)
+        cls.remote = FlyteRemote(
+            config=Config.auto(cls.CONFIG_PATH),
+            default_project=project_deployment,
+            default_domain=domain_deployment,
+        )
+
+    @pytest.mark.parametrize("wf_case", WORKFLOW_CASES)
+    def test_workflow(self, wf_case: WorkflowCase):
+        flyte_wf = self.remote.fetch_workflow(name=wf_case.workflow.name)
+        print(f"Running workflow {flyte_wf.name} with inputs {wf_case.inputs}")
+        execution = self.remote.execute(flyte_wf, inputs=wf_case.inputs)
+        url = self.remote.generate_console_url(execution)
+        print(f"Execution URL: {url}")
+        execution = self.remote.wait(execution)
+        assert execution.closure.phase == 4
 
 
-@pytest.mark.parametrize("wf_case", WORKFLOW_CASES)
-def test_workflow(wf_case: WorkflowCase):
-    flyte_wf = remote.fetch_workflow(name=wf_case.workflow.name)
-    print(f"Running workflow {flyte_wf.name} with inputs {wf_case.inputs}")
-    execution = remote.execute(flyte_wf, inputs=wf_case.inputs)
-    url = remote.generate_console_url(execution)
-    print(f"Execution URL: {url}")
-    execution = remote.wait(execution)
-    ## Make sure that your aws credentials are set up correctly to download from S3 locally
-    assert execution.closure.phase == 4
