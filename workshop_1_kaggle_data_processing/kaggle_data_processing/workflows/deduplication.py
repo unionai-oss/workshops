@@ -2,14 +2,14 @@ import flytekit
 from flytekit import task, workflow, ContainerTask, kwtypes, Resources, TaskMetadata
 from flytekit.types.file import FlyteFile
 from flytekit import Secret
-from ..imagespec import dedupe_image, registry_prefix
+from ..images import dedupe_image, registry_prefix, get_dataset_package_name_tag
 
 SECRET_GROUP = "arn:aws:secretsmanager:<your-aws-region>:<your-aws-account>:"
 SECRET_KEY = "<your-secret-org>/<your-secret-name"
 
 get_dataset = ContainerTask(
     name="get_dataset",
-    image=f"{registry_prefix}/core:kaggle",
+    image=f"{registry_prefix}/{get_dataset_package_name_tag}",
     input_data_dir="/var/inputs",
     output_data_dir="/var/outputs",
     inputs=kwtypes(dataset_name=str, file_name=str, kaggle_config=str),
