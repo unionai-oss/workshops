@@ -28,18 +28,17 @@ p_template = PodTemplate(
 )
 
 dashboard_image = ImageSpec(
-    packages=["flytekit>= 1.10",
-              "matplotlib==3.8.2",
-              "seaborn==0.13.0",
-              "flytekit==1.10",
-              "flytekitplugins-envd==1.10",
-              "flytekitplugins-papermill==1.10"],
+    packages=["flytekit",
+              "matplotlib",
+              "seaborn",
+              "flytekitplugins-envd",
+              "flytekitplugins-papermill"],
     registry="ghcr.io/unionai-oss",
     name="neuronx-dashboard"
 )
 
 neuronx_image = ImageSpec(
-    packages=["flytekit>=1.10", "torch==2.0", "torchvision"],
+    # packages=["flytekit>=1.10", "torch==2.0", "torchvision"],
     base_image="ghcr.io/unionai-oss/neuronx:2.0",
     registry="ghcr.io/unionai-oss",
     name="neuronx-resnet50"
