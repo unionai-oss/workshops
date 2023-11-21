@@ -38,7 +38,6 @@ dashboard_image = ImageSpec(
 )
 
 neuronx_image = ImageSpec(
-    # packages=["flytekit>=1.10", "torch==2.0", "torchvision"],
     base_image="ghcr.io/unionai-oss/neuronx:2.0",
     registry="ghcr.io/unionai-oss",
     name="neuronx-resnet50"
