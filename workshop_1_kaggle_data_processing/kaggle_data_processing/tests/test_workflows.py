@@ -6,32 +6,27 @@
 # """
 
 import os
-import logging
+import pytest
 from pathlib import Path
-
-import pandas as pd
-
 from .cases import WorkflowCase, WORKFLOW_CASES
 from flytekit.remote import FlyteRemote
 from flytekit.configuration import Config
-import pytest
+from ..config import target_project, target_domain
 
-project_deployment = "<your-project-name>"
-domain_deployment = "<your-domain>"
 
 class TestWorkflow:
     @classmethod
     def setup_class(cls):
         # get config path from environment variable, or use the uctl default
         cls.CONFIG_PATH = os.environ.get(
-            "UCTL_CONFIG",
+            "FLYTECTL_CONFIG",
             str(Path.home() / ".uctl" / "config.yaml")
         )
 
         cls.remote = FlyteRemote(
             config=Config.auto(cls.CONFIG_PATH),
-            default_project=project_deployment,
-            default_domain=domain_deployment,
+            default_project=target_project,
+            default_domain=target_domain,
         )
 
     @pytest.mark.parametrize("wf_case", WORKFLOW_CASES)
@@ -43,5 +38,3 @@ class TestWorkflow:
         print(f"Execution URL: {url}")
         execution = self.remote.wait(execution)
         assert execution.closure.phase == 4
-
-
