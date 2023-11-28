@@ -46,5 +46,5 @@ def get_dataset(data_path: Path, num_proc: int = 1, limit: Optional[int] = None,
 
 
 if __name__ == "__main__":
-    data_path = Path.home() / "datasets" / "flyte_llama"
+    data_path = Path.home() / "datasets" / "flyte_llm"
     dataset = get_dataset(data_path)

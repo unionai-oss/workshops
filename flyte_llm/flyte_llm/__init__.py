@@ -1,1 +1,1 @@
-from . import dataset, dataloader, train, publish
+from . import dataset, dataloader, train, publish, inference

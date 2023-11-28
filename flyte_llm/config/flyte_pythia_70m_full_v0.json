@@ -15,7 +15,7 @@
     "use_qlora": false,
     "debug": false,
     "publish_config": {
-        "repo_id": "unionai/flyte-pythia-70m-deduped-full-adapter-v0",
+        "repo_id": "Union-AI-OSS/flyte-pythia-70m-deduped-full-adapter-v0",
         "readme": "# flyte-pythia-70m fine-tuned on Flyte repos",
         "language": "python",
         "model_card": {

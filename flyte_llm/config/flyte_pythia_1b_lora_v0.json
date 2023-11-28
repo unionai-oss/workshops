@@ -1,5 +1,5 @@
 {
-    "model_path": "EleutherAI/pythia-70m-deduped-v0",
+    "model_path": "EleutherAI/pythia-1b",
     "output_dir": "./output",
     "checkpoint_dir": null,
     "num_epochs": 1,
@@ -12,8 +12,8 @@
     "gradient_accumulation_steps": 8,
     "padding": "left",
     "dataloader_num_proc": 8,
-    "use_fp16": false,
-    "use_4bit": false,
+    "use_fp16": true,
+    "use_4bit": true,
     "use_qlora": true,
     "lora_r": 8,
     "lora_alpha": 16,
@@ -21,7 +21,7 @@
     "lora_dropout": 0.05,
     "debug": false,
     "publish_config": {
-        "repo_id": "Union-AI-OSS/flyte-pythia-70m-deduped-lora-adapter-v0",
+        "repo_id": "Union-AI-OSS/flyte-pythia-1b-lora-adapter-v0",
         "readme": "# flyte-pythia-70m fine-tuned on Flyte repos",
         "language": "python",
         "model_card": {

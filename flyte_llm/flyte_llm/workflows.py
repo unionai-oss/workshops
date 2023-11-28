@@ -10,12 +10,14 @@ from flytekit.types.directory import FlyteDirectory
 
 import flyte_llm
 
-# Union Tenant
+# Union Managed Secrets
+# Configured for TMLS use only
 SECRET_GROUP = "arn:aws:secretsmanager:us-east-2:356633062068:secret:"
 WANDB_API_SECRET_KEY = "wand_api_key_tmls-PLs22C"
 HF_HUB_API_SECRET_KEY = "huggingface_hub_api_key_tmls-CB6DVk"
 
-
+# You shouldn't need to update this, any update will require a local docker build / push which will
+# Consume a substantial amount of bandwidth.
 image_spec = ImageSpec(
     name="flyte-llama-qlora",
     apt_packages=["git"],
@@ -33,8 +35,8 @@ image_spec = ImageSpec(
     container_image=image_spec,
     requests=Resources(mem="8Gi", cpu="2", ephemeral_storage="8Gi"),
 )
-def create_dataset(additional_urls: Optional[List[str]] = None) -> FlyteDirectory:
-    urls = [*flyte_llm.dataset.REPO_URLS, *(additional_urls or [])]
+def create_dataset(additional_github_repo_url: Optional[str] = None) -> FlyteDirectory:
+    urls = [*flyte_llm.dataset.REPO_URLS, *(additional_github_repo_url or [])]
 
     ctx = current_context()
     working_dir = Path(ctx.working_directory)
@@ -120,15 +122,18 @@ def train_task(
         ),
     ],
 )
-# def inference(prompt: str) -> str:
-#     return
+def inference(prompt: str, model_dir: FlyteDirectory, config: flyte_llm.train.TrainerConfig) -> str:
+    model_dir.download()
+    model = flyte_llm.inference.load_pipeline(config, model_dir.path)
+    return flyte_llm.inference.infer(model, prompt)
 
 
 @workflow
 def train_workflow(
     config: flyte_llm.train.TrainerConfig,
+    custom_github_url: Optional[str] = None,
 ) -> FlyteDirectory:
-    dataset = create_dataset()
+    dataset = create_dataset(custom_github_url)
     model = train_task(
         dataset=dataset,
         config=config,
@@ -172,3 +177,11 @@ def publish_model_workflow(
     config: flyte_llm.train.TrainerConfig,
 ) -> str:
     return publish_model(model_dir=model_dir, config=config)
+
+@workflow
+def inference_workflow(
+    prompt: str,
+    model_dir: FlyteDirectory,
+    config: flyte_llm.train.TrainerConfig,
+) -> str:
+    return inference(prompt=prompt, model_dir=model_dir, config=config)

@@ -28,7 +28,6 @@ def publish_to_hf_hub(
     # make sure the file can be downloaded
     publish_config: PublishConfig = config.publish_config
 
-    model_dir
     hh.login(token=hf_auth_token)
     api = hh.HfApi()
     if quantized_8bit:

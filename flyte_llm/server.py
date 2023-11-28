@@ -37,7 +37,7 @@ class ServingConfig:
     model_path: str
     adapter_path: Optional[str] = None
     model_max_length: int = 1024
-    max_gen_length: int = 1024
+    max_gen_length: int = 128
     padding: str = "right"
     device_map: str = "auto"
     use_float16: bool = False
@@ -104,8 +104,8 @@ class FlyteLlama(MsgpackMixin, Worker):
             use_4bit = False
 
         self.config = ServingConfig(
-            model_path="codellama/CodeLlama-7b-hf",
-            adapter_path="unionai/FlyteLlama-v0-7b-hf-flyte-repos",
+            model_path="EleutherAI/pythia-70m-deduped-v0",
+            adapter_path="Union-AI-OSS/flyte-pythia-70m-deduped-lora-adapter-v0",
             device_map=device_map,
             use_float16=use_float16,
             use_4bit=use_4bit,

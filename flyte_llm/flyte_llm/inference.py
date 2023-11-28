@@ -4,9 +4,10 @@ envd build -f :serving --output type=image,name=ghcr.io/unionai-oss/modelz-flyte
 
 import os
 from dataclasses import dataclass
-
+from pathlib import Path
 import torch  # type: ignore
 import huggingface_hub as hh
+import transformers
 from transformers import (
     pipeline,
     AutoTokenizer,
@@ -26,7 +27,7 @@ class ServingConfig:
     use_4bit: bool = False
 
 
-def load_pipeline(config):
+def load_pipeline(config, model_path: Path = None):
     # hh.login(token=os.environ["HF_AUTH_TOKEN"])
 
     tokenizer = AutoTokenizer.from_pretrained(
@@ -55,11 +56,16 @@ def load_pipeline(config):
                 bnb_4bit_compute_dtype=torch.float32,
             ),
         }
-
-    model = AutoModelForCausalLM.from_pretrained(
-        config.adapter_path,
-        **load_model_params,
-    )
+    if model_path is not None:
+        model = AutoModelForCausalLM.from_pretrained(
+            model_path,
+            **load_model_params,
+        )
+    else:
+        model = AutoModelForCausalLM.from_pretrained(
+            config.adapter_path,
+            **load_model_params,
+        )
 
     return pipeline(
         "text-generation",
@@ -69,13 +75,21 @@ def load_pipeline(config):
     )
 
 
+def infer(model: transformers.Pipeline, prompts: list[str]) -> str:
+    return model(
+        prompts,
+        max_length=40,
+        pad_token_id=model.tokenizer.eos_token_id,
+    )
+
+
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--stream", action="store_true", default=False)
     args = parser.parse_args()
-    
+
     config = ServingConfig(
         model_path="codellama/CodeLlama-7b-hf",
         adapter_path="unionai/FlyteLlama-v0-7b-hf-flyte-repos",
@@ -83,7 +97,7 @@ if __name__ == "__main__":
     )
     print("loading pipeline")
     pipe = load_pipeline(config)
-        
+
     print("generating...")
 
     prompts = ["The code below shows a basic Flyte workflow"]
@@ -122,4 +136,3 @@ if __name__ == "__main__":
         for res in results:
             for text in res:
                 print(text["generated_text"])
-        

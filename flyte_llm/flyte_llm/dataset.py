@@ -117,7 +117,7 @@ if __name__ == "__main__":
     from argparse import ArgumentParser
 
     parser = ArgumentParser()
-    parser.add_argument("--output-path", type=str, required=True, default="~/datasets/flyte_llama")
+    parser.add_argument("--output-path", type=str, required=True, default="~/datasets/flyte_llm")
     args = parser.parse_args()
 
     output_path = Path(args.output_path)
