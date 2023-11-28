@@ -74,11 +74,6 @@ def train_task(
 ) -> FlyteDirectory:
     if int(os.environ.get("LOCAL_RANK", 0)) == 0:
         logger.info(f"Training Flyte Llama with params:\n{config}")
-    pretrained_adapter = None
-    if pretrained_adapter is not None:
-        print(f"Downloading pretrained adapter {pretrained_adapter}")
-        pretrained_adapter.download()
-
     wandb_run_name = os.environ.get("FLYTE_INTERNAL_EXECUTION_ID", "local")
     os.environ["WANDB_RUN_ID"] = wandb_run_name
 
@@ -96,7 +91,7 @@ def train_task(
     except ValueError:
         hf_auth_token = None
 
-    flyte_llm.train.train(config, pretrained_adapter, hf_auth_token)
+    flyte_llm.train.train(config, hf_auth_token)
     return FlyteDirectory(path=str(config.output_dir))
 
 @task(

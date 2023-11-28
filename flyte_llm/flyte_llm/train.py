@@ -82,7 +82,6 @@ class TrainerConfig:
 
 def train(
     config: TrainerConfig,
-    pretrained_adapter: Optional[Path] = None,
     hf_auth_token: Optional[str] = None,
     **kwargs,
 ):
@@ -136,29 +135,17 @@ def train(
         model.gradient_checkpointing_enable()
         model = prepare_model_for_kbit_training(model)
 
-        if pretrained_adapter is not None:
-            lora_config = LoraConfig.from_pretrained(pretrained_adapter)
-            lora_config.inference_mode = False
-            model = get_peft_model(model, lora_config)
-            model.load_adapter(
-                pretrained_adapter,
-                adapter_name="default",
-                is_trainable=True,
-            )
-            model.set_adapter("default")
-        else:
-            lora_config = LoraConfig(
-                r=config.lora_r,
-                lora_alpha=config.lora_alpha,
-                target_modules=config.lora_target_modules,
-                lora_dropout=config.lora_dropout,
-                bias="none",
-                task_type="CAUSAL_LM",
-            )
-            model = get_peft_model(model, lora_config)
 
-        print("LORA Config:")
-        print(json.dumps(asdict(lora_config), indent=4))
+        lora_config = LoraConfig(
+            r=config.lora_r,
+            lora_alpha=config.lora_alpha,
+            target_modules=config.lora_target_modules,
+            lora_dropout=config.lora_dropout,
+            bias="none",
+            task_type="CAUSAL_LM",
+        )
+        model = get_peft_model(model, lora_config)
+
         model.print_trainable_parameters()
 
     def tokenize(examples):
@@ -223,14 +210,3 @@ def train(
     eval_results = trainer.evaluate(eval_dataset=dataset_splits["test"])
     print(f"Perplexity: {math.exp(eval_results['eval_loss']):.2f}")
     trainer.save_model(training_args.output_dir)
-
-
-if __name__ == "__main__":
-    from transformers import HfArgumentParser
-
-    parser = HfArgumentParser(TrainerConfig)
-    args = parser.parse_args_into_dataclasses()[0]
-
-    print(f"Arguments: {args}")
-    pretrained_adapter = Path.home() / "models/flyte_llama_adapters/f3377f5a787ac4ede924"
-    train(args, pretrained_adapter=pretrained_adapter)
