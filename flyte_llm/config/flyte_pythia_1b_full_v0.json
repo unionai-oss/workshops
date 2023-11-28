@@ -3,7 +3,7 @@
     "output_dir": "./output",
     "checkpoint_dir": null,
     "num_epochs": 1,
-    "batch_size": 1,
+    "batch_size": 8,
     "test_size": 0.001,
     "model_max_length": 512,
     "seed": 41,

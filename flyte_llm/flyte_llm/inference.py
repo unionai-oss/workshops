@@ -5,6 +5,8 @@ envd build -f :serving --output type=image,name=ghcr.io/unionai-oss/modelz-flyte
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from typing import List
+
 import torch  # type: ignore
 import huggingface_hub as hh
 import transformers
@@ -75,7 +77,7 @@ def load_pipeline(config, model_path: Path = None):
     )
 
 
-def infer(model: transformers.Pipeline, prompts: list[str]) -> str:
+def infer(model: transformers.Pipeline, prompts: List[str]) -> List[dict]:
     return model(
         prompts,
         max_length=40,

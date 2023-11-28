@@ -48,10 +48,8 @@ def create_dataset(additional_github_repo_url: Optional[str] = None) -> FlyteDir
 
 
 @task(
-    cache=True,
-    cache_version="20",
     container_image=image_spec,
-    requests=Resources(mem="120Gi", cpu="44", gpu="8", ephemeral_storage="100Gi"),
+    requests=Resources(mem="10Gi", cpu="10", gpu="4", ephemeral_storage="100Gi"),
     environment={
         "WANDB_PROJECT": "qlora-llama2-fine-tuning-tmls",
         "TRANSFORMERS_CACHE": "/tmp",
@@ -103,7 +101,7 @@ def train_task(
 
 @task(
     container_image=image_spec,
-    requests=Resources(mem="120Gi", cpu="44", gpu="8", ephemeral_storage="100Gi"),
+    requests=Resources(mem="10Gi", cpu="10", gpu="4", ephemeral_storage="100Gi"),
     environment={
         "WANDB_PROJECT": "qlora-llama2-fine-tuning-tmls",
         "TRANSFORMERS_CACHE": "/tmp",
@@ -122,7 +120,7 @@ def train_task(
         ),
     ],
 )
-def inference(prompt: str, model_dir: FlyteDirectory, config: flyte_llm.train.TrainerConfig) -> str:
+def inference(prompt: List[str], model_dir: FlyteDirectory, config: flyte_llm.train.TrainerConfig) -> List[dict]:
     model_dir.download()
     model = flyte_llm.inference.load_pipeline(config, model_dir.path)
     return flyte_llm.inference.infer(model, prompt)
@@ -133,7 +131,7 @@ def train_workflow(
     config: flyte_llm.train.TrainerConfig,
     custom_github_url: Optional[str] = None,
 ) -> FlyteDirectory:
-    dataset = create_dataset(custom_github_url)
+    dataset = create_dataset(additional_github_repo_url=custom_github_url)
     model = train_task(
         dataset=dataset,
         config=config,
@@ -180,8 +178,8 @@ def publish_model_workflow(
 
 @workflow
 def inference_workflow(
-    prompt: str,
+    prompt: List[str],
     model_dir: FlyteDirectory,
     config: flyte_llm.train.TrainerConfig,
-) -> str:
+) -> List[dict]:
     return inference(prompt=prompt, model_dir=model_dir, config=config)
