@@ -8,7 +8,10 @@ from flytekit import task, workflow, current_context, Resources, Secret, ImageSp
 from flytekit.loggers import logger
 from flytekit.types.directory import FlyteDirectory
 
-import flyte_llm
+from flyte_llm.dataset import create_dataset_fn, REPO_URLS
+from flyte_llm.train import train_fn, TrainerConfig
+from flyte_llm.inference import infer, load_pipeline
+from flyte_llm.publish import publish_to_hf_hub
 
 # Union Managed Secrets
 # Configured for TMLS use only
@@ -36,14 +39,14 @@ image_spec = ImageSpec(
     requests=Resources(mem="8Gi", cpu="2", ephemeral_storage="8Gi"),
 )
 def create_dataset(additional_github_repo_url: Optional[str] = None) -> FlyteDirectory:
-    urls = [*flyte_llm.dataset.REPO_URLS, *(additional_github_repo_url or [])]
+    urls = [*REPO_URLS, *(additional_github_repo_url or [])]
 
     ctx = current_context()
     working_dir = Path(ctx.working_directory)
     output_dir = working_dir / "dataset"
     repo_cache_dir = working_dir / "repo_cache"
 
-    flyte_llm.dataset.create_dataset(urls, output_dir, repo_cache_dir)
+    create_dataset_fn(urls, output_dir, repo_cache_dir)
     return FlyteDirectory(path=str(output_dir))
 
 
@@ -70,7 +73,7 @@ def create_dataset(additional_github_repo_url: Optional[str] = None) -> FlyteDir
 )
 def train_task(
     dataset: FlyteDirectory,
-    config: flyte_llm.train.TrainerConfig,
+    config: TrainerConfig,
 ) -> FlyteDirectory:
     if int(os.environ.get("LOCAL_RANK", 0)) == 0:
         logger.info(f"Training Flyte Llama with params:\n{config}")
@@ -91,7 +94,7 @@ def train_task(
     except ValueError:
         hf_auth_token = None
 
-    flyte_llm.train.train(config, hf_auth_token)
+    train_fn(config, hf_auth_token)
     return FlyteDirectory(path=str(config.output_dir))
 
 @task(
@@ -115,15 +118,15 @@ def train_task(
         ),
     ],
 )
-def inference(prompt: List[str], model_dir: FlyteDirectory, config: flyte_llm.train.TrainerConfig) -> List[dict]:
+def inference(prompt: List[str], model_dir: FlyteDirectory, config: TrainerConfig) -> List[dict]:
     model_dir.download()
-    model = flyte_llm.inference.load_pipeline(config, model_dir.path)
-    return flyte_llm.inference.infer(model, prompt)
+    model = load_pipeline(config, model_dir.path)
+    return infer(model, prompt)
 
 
 @workflow
 def train_workflow(
-    config: flyte_llm.train.TrainerConfig,
+    config: TrainerConfig,
     custom_github_url: Optional[str] = None,
 ) -> FlyteDirectory:
     dataset = create_dataset(additional_github_repo_url=custom_github_url)
@@ -150,7 +153,7 @@ def train_workflow(
 )
 def publish_model(
     model_dir: FlyteDirectory,
-    config: flyte_llm.train.TrainerConfig,
+    config: TrainerConfig,
 ) -> str:
     model_dir.download()
     model_dir = Path(model_dir.path)
@@ -161,13 +164,13 @@ def publish_model(
     except Exception:
         hf_auth_token = None
 
-    return flyte_llm.publish.publish_to_hf_hub(model_dir, config, hf_auth_token)
+    return publish_to_hf_hub(model_dir, config, hf_auth_token)
 
 
 @workflow
 def publish_model_workflow(
     model_dir: FlyteDirectory,
-    config: flyte_llm.train.TrainerConfig,
+    config: TrainerConfig,
 ) -> str:
     return publish_model(model_dir=model_dir, config=config)
 
@@ -175,6 +178,6 @@ def publish_model_workflow(
 def inference_workflow(
     prompt: List[str],
     model_dir: FlyteDirectory,
-    config: flyte_llm.train.TrainerConfig,
+    config: TrainerConfig,
 ) -> List[dict]:
     return inference(prompt=prompt, model_dir=model_dir, config=config)

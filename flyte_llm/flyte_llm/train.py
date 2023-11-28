@@ -80,7 +80,7 @@ class TrainerConfig:
     publish_config: Optional[PublishConfig] = field(default=None)
 
 
-def train(
+def train_fn(
     config: TrainerConfig,
     hf_auth_token: Optional[str] = None,
     **kwargs,

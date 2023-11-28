@@ -80,7 +80,7 @@ def get_file_name(repo_filepath: Path) -> str:
     )
 
 
-def create_dataset(
+def create_dataset_fn(
     urls: list[str],
     output_dir: Path,
     repo_cache_dir: Path,
@@ -122,7 +122,7 @@ if __name__ == "__main__":
 
     output_path = Path(args.output_path)
     output_path.mkdir(parents=True, exist_ok=True)
-    create_dataset(
+    create_dataset_fn(
         REPO_URLS,
         output_path,
         Path("/tmp/flyte_llama_github"),
