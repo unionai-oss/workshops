@@ -29,8 +29,7 @@ class ServingConfig:
     use_4bit: bool = False
 
 
-def load_pipeline(config, model_path: Path = None):
-    # hh.login(token=os.environ["HF_AUTH_TOKEN"])
+def load_pipeline(config, model_path):
 
     tokenizer = AutoTokenizer.from_pretrained(
         config.model_path,
@@ -77,12 +76,12 @@ def load_pipeline(config, model_path: Path = None):
     )
 
 
-def infer(model: transformers.Pipeline, prompts: List[str]) -> List[dict]:
+def infer(model: transformers.Pipeline, prompts: str) -> dict:
     return model(
         prompts,
         max_length=40,
         pad_token_id=model.tokenizer.eos_token_id,
-    )
+    )[0]
 
 
 if __name__ == "__main__":

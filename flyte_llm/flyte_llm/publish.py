@@ -21,19 +21,16 @@ MODEL_CARD_TEMPLATE = """
 
 def publish_to_hf_hub(
     model_dir: Path,
+    adapter_name: str,
     config: TrainerConfig,
     hf_auth_token: str,
-    quantized_8bit: Optional[bool] = None,
 ) -> str:
     # make sure the file can be downloaded
     publish_config: PublishConfig = config.publish_config
 
     hh.login(token=hf_auth_token)
     api = hh.HfApi()
-    if quantized_8bit:
-        repo_id = f"{publish_config.repo_id}-8bit"
-    else:
-        repo_id = publish_config.repo_id
+    repo_id = f"Union-AI-OSS/{adapter_name}"
 
     repo_url = api.create_repo(repo_id, exist_ok=True)
 

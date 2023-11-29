@@ -16,7 +16,7 @@
     "debug": false,
     "publish_config": {
         "repo_id": "Union-AI-OSS/flyte-pythia-1b-full-adapter-v0",
-        "readme": "# flyte-pythia-70m fine-tuned on Flyte repos",
+        "readme": "# flyte-pythia-1b fine-tuned on Flyte repos, at TMLS 2023",
         "language": "python",
         "model_card": {
             "language": ["en"],
@@ -26,7 +26,8 @@
                 "causal-lm",
                 "pythia",
                 "fine-tuning",
-                "flyte repo dataset"
+                "flyte repo dataset",
+                "TMLS-2023"
             ]
         }
     }

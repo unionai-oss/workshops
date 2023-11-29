@@ -118,9 +118,12 @@ if __name__ == "__main__":
 
     parser = ArgumentParser()
     parser.add_argument("--output-path", type=str, required=True, default="~/datasets/flyte_llm")
+    parser.add_argument("--additional-github-repo-url", type=str, required=False, default=None)
     args = parser.parse_args()
 
     output_path = Path(args.output_path)
+    if args.additional_github_repo_url:
+        REPO_URLS.append(args.additional_github_repo_url)
     output_path.mkdir(parents=True, exist_ok=True)
     create_dataset_fn(
         REPO_URLS,

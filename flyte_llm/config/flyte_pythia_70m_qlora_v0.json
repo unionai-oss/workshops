@@ -1,28 +1,28 @@
 {
-    "model_path": "codellama/CodeLlama-7b-Instruct-hf",
+    "model_path": "EleutherAI/pythia-70m-deduped-v0",
     "output_dir": "./output",
     "checkpoint_dir": null,
     "num_epochs": 1,
-    "batch_size": 1,
+    "batch_size": 16,
     "test_size": 0.001,
-    "model_max_length": 4096,
+    "model_max_length": 512,
     "seed": 41,
     "report_to": "wandb",
     "device_map": "auto",
     "gradient_accumulation_steps": 8,
     "padding": "left",
     "dataloader_num_proc": 8,
-    "use_fp16": true,
-    "use_4bit": true,
+    "use_fp16": false,
+    "use_4bit": false,
     "use_qlora": true,
     "lora_r": 8,
     "lora_alpha": 16,
-    "lora_target_modules": ["q_proj", "v_proj"],
+    "lora_target_modules": ["dense_h_to_4h", "dense_4h_to_h"],
     "lora_dropout": 0.05,
     "debug": false,
     "publish_config": {
-        "repo_id": "unionai/FlyteLlama-v0-7b-Instruct-hf",
-        "readme": "# FlyteLlama-v0-7b-Instruct-hf fine-tuned on Flyte repos",
+        "repo_id": "Union-AI-OSS/flyte-pythia-70m-deduped-lora-adapter-v0",
+        "readme": "# flyte-pythia-70m fine-tuned on Flyte repos, at TMLS 2023",
         "language": "python",
         "model_card": {
             "language": ["en"],
@@ -30,11 +30,10 @@
             "tags": [
                 "pytorch",
                 "causal-lm",
-                "llama2",
-                "code llama",
+                "pythia",
                 "fine-tuning",
-                "flyte llama",
-                "flyte repo dataset"
+                "flyte repo dataset",
+                "TMLS-2023"
             ]
         }
     }
