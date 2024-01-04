@@ -9,3 +9,4 @@ These workshops each have their own readme, and dependencies; **All workshops as
 - [Client/Server Communication - Workshop 2](client_server_communication/README.md)
 - [Resnet50 Inference w/ AWS Silicon](aws_silicon/README.md)
 - [FlyteLLM - a Generative model that knows Flyte](flytellm/README.md)
+- [Nvidia Triton - Deploying huggingface models & batch inference](triton_flyte_client/README.md)
