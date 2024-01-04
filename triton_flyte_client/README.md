@@ -17,9 +17,3 @@ This workshop/example showcases how to:
 3. Install the requirements in [requirements.txt](requirements.txt)
 4. run `pyflyte run --remote triton_workflows/main.py register_model` to register the model in Flyte
 5. Run `pyflyte run flyte_workflows/main.py make_batch_inference_request --inputs="hello brian. The quick brown fox. Hello ." --model_name="llama2_7b_chat" --hf_hub_model_name="llama2_7b_chat" --model_version=1` to make your batch inference request, from your local environment
-
-
-## Pytest
-1. Perform all steps in [Setup](#setup)
-2. Update [test_workflows.py](tests/test_workflows.py) with your project and domain of the registered workflow
-3. Run `pytest` and wait for the tests to complete
