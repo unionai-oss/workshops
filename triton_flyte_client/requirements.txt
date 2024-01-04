@@ -1,0 +1,5 @@
+tritonclient[http, cuda]==2.40
+flytekit>=1.10
+transformers
+torch==2.0.0
+torchvision==0.15.1
