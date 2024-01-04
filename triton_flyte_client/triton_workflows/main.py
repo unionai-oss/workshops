@@ -70,7 +70,7 @@ def generate_config_pbtxt(model_name, input_shapes, output_shapes):
 
 
 @task(container_image=image, requests=Resources(mem="25Gi", gpu="1"))
-def deploy_hf_llm_model(hf_hub_model_name: str, model_name: str, model_registry_uri: str) -> FlyteDirectory:
+def register_hf_text_classifier(hf_hub_model_name: str, model_name: str, model_registry_uri: str) -> FlyteDirectory:
     version = 1
     model = AutoModelForTokenClassification.from_pretrained(hf_hub_model_name, torchscript=True)
     model = model.to("cuda")
@@ -134,4 +134,4 @@ async def make_batch_inference_request(inputs: str, model_name: str, hf_hub_mode
 def register_model(model_name: str="llama2_7b_chat",
                    model_registry_uri: str="s3://union-oc-production-demo/triton-model-registry",
                    hf_hub_model_name: str="llama2_7b_chat") -> FlyteDirectory:
-    return deploy_hf_llm_model(hf_hub_model_name=hf_hub_model_name, model_name=model_name, model_registry_uri=model_registry_uri)
+    return register_hf_text_classifier(hf_hub_model_name=hf_hub_model_name, model_name=model_name, model_registry_uri=model_registry_uri)
