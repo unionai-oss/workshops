@@ -2,4 +2,8 @@ tritonclient[http, cuda]==2.40
 flytekit>=1.10
 transformers
 torch==2.0.0
+<<<<<<< HEAD
 torchvision==0.15.1
+=======
+torchvision==0.15.1
+>>>>>>> dc83c4c8f0b988ca05d90a8b79aabec85f77fa55

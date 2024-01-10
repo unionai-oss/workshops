@@ -43,7 +43,6 @@ def generate_config_pbtxt(model_name, input_shapes, output_shapes):
     name: "{model_name}"
     backend: "pytorch"
     max_batch_size: 0  # 0 for dynamic batching
-    
     input [
     {inputs_config}
     ]
